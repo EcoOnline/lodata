@@ -82,7 +82,7 @@ trait UseDatabaseAssertions
 
 
     // https://github.com/mattiasgeniar/phpunit-query-count-assertions/blob/master/src/AssertsQueryCounts.php
-    protected function assertNoQueriesExecuted(Closure $closure = null): void
+    protected function assertNoQueriesExecuted(?Closure $closure = null): void
     {
         if ($closure) {
             self::trackQueries();
@@ -97,7 +97,7 @@ trait UseDatabaseAssertions
         }
     }
 
-    protected function assertQueryCountMatches(int $count, Closure $closure = null): void
+    protected function assertQueryCountMatches(int $count, ?Closure $closure = null): void
     {
         if ($closure) {
             self::trackQueries();
@@ -112,7 +112,7 @@ trait UseDatabaseAssertions
         }
     }
 
-    protected function assertQueryCountLessThan(int $count, Closure $closure = null): void
+    protected function assertQueryCountLessThan(int $count, ?Closure $closure = null): void
     {
         if ($closure) {
             self::trackQueries();
@@ -127,7 +127,7 @@ trait UseDatabaseAssertions
         }
     }
 
-    protected function assertQueryCountGreaterThan(int $count, Closure $closure = null): void
+    protected function assertQueryCountGreaterThan(int $count, ?Closure $closure = null): void
     {
         if ($closure) {
             self::trackQueries();

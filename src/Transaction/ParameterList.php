@@ -27,7 +27,7 @@ class ParameterList
      * Parse a string into separate parameters
      * @param  string|null  $text
      */
-    public function parse(string $text = null)
+    public function parse(?string $text = null)
     {
         if (!$text) {
             return;

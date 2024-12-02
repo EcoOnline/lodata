@@ -11,7 +11,7 @@ class LodataNamespace
 {
     protected ?string $name = null;
 
-    public function __construct(string $name = null)
+    public function __construct(?string $name = null)
     {
         $this->name = $name;
     }

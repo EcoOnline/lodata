@@ -33,7 +33,7 @@ abstract class StreamingJsonMatches extends Constraint
         return json_encode(json_decode($string));
     }
 
-    protected function _fail($other, string $description, ComparisonFailure $comparisonFailure = null): void
+    protected function _fail($other, string $description, ?ComparisonFailure $comparisonFailure = null): void
     {
         if ($comparisonFailure === null) {
             $decodedOther = json_decode($other);

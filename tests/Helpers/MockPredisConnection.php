@@ -11,7 +11,7 @@ use Illuminate\Redis\Connections\PredisConnection;
 
 class MockPredisConnection extends PredisConnection
 {
-    public function pipeline(callable $callback = null)
+    public function pipeline(?callable $callback = null)
     {
         $pipeline = $this->client()->pipeline();
 

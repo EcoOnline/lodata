@@ -13,7 +13,7 @@ use Flat3\Lodata\Expression\Lexer;
  */
 final class ParserException extends BadRequestException
 {
-    public function __construct(string $message, Lexer $lexer = null)
+    public function __construct(string $message, ?Lexer $lexer = null)
     {
         if ($lexer) {
             $message .= ' at: '.$lexer->errorContext();

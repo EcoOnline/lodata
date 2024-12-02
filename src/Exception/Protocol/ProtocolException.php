@@ -30,7 +30,7 @@ abstract class ProtocolException extends RuntimeException implements Responsable
     protected $suppressContent = false;
     protected $originalException = null;
 
-    public function __construct(string $code = null, string $message = null, Throwable $originalException = null)
+    public function __construct(?string $code = null, ?string $message = null, ?Throwable $originalException = null)
     {
         if ($code) {
             $this->odataCode = $code;

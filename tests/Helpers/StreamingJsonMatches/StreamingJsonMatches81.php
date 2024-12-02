@@ -10,7 +10,7 @@ use SebastianBergmann\Comparator\ComparisonFailure;
 
 class StreamingJsonMatches81 extends StreamingJsonMatches
 {
-    public function fail($other, string $description, ComparisonFailure $comparisonFailure = null): never
+    public function fail($other, string $description, ?ComparisonFailure $comparisonFailure = null): never
     {
         $this->_fail($other, $description, $comparisonFailure);
 
