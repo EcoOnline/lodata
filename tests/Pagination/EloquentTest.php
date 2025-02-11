@@ -27,7 +27,7 @@ class EloquentTest extends Pagination
 
         $this->driverState = null;
 
-        Pet::truncate();
+        Pet::truncate(); // @phpstan-ignore-line
 
         for ($i = 0; $i < 40; $i++) {
             (new Pet)->fill([
