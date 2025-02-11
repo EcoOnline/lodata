@@ -328,7 +328,7 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
                 yield $this->modelToEntity($result);
             }
 
-            if ($results->count() <= $chunkSize) {
+            if ($results->count() < $chunkSize) {
                 break;
             }
         }

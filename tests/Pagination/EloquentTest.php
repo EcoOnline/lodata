@@ -18,17 +18,16 @@ class EloquentTest extends Pagination
 
     public static function chunkSizes(): array
     {
-        return [[1], [10], [100]];
+        return [[1], [10], [40], [100]];
     }
 
-    /**
-     * @dataProvider chunkSizes
-     */
-    public function test_large($chunkSize)
+    public function setUp(): void
     {
+        parent::setUp();
+
         $this->driverState = null;
 
-        EloquentEntitySet::$chunkSize = $chunkSize;
+        Pet::truncate();
 
         for ($i = 0; $i < 40; $i++) {
             (new Pet)->fill([
@@ -37,32 +36,82 @@ class EloquentTest extends Pagination
             ])->save();
         }
 
+        config(['lodata.pagination.default' => null]);
+    }
+
+    public function tearDown(): void
+    {
+        EloquentEntitySet::$chunkSize = 1000;
+        parent::tearDown();
+    }
+
+    /**
+     * @dataProvider chunkSizes
+     */
+    public function test_chunk_standard($chunkSize)
+    {
+        EloquentEntitySet::$chunkSize = $chunkSize;
+
+        $this->assertPaginationSequence(
+            (new Request)
+                ->orderby('id asc')
+                ->path($this->petEntitySetPath),
+            PHP_INT_MAX, '@nextLink', 40,
+        );
+    }
+
+    /**
+     * @dataProvider chunkSizes
+     */
+    public function test_chunk_skip_top($chunkSize)
+    {
+        EloquentEntitySet::$chunkSize = $chunkSize;
+
         $this->assertPaginationSequence(
             (new Request)
                 ->skip('2')
                 ->top('15')
-                ->orderby('id desc')
+                ->orderby('id asc')
                 ->filter("type eq 'dog'")
                 ->count('true')
-                ->path($this->petEntitySetPath)
+                ->path($this->petEntitySetPath),
+            PHP_INT_MAX, '@nextLink', 40-2,
         );
+    }
+
+    /**
+     * @dataProvider chunkSizes
+     */
+    public function test_chunk_top($chunkSize)
+    {
+        EloquentEntitySet::$chunkSize = $chunkSize;
 
         $this->assertPaginationSequence(
             (new Request)
                 ->top('15')
-                ->orderby('id desc')
+                ->orderby('id asc')
                 ->filter("type eq 'dog'")
                 ->count('true')
-                ->path($this->petEntitySetPath)
+                ->path($this->petEntitySetPath),
+            PHP_INT_MAX, '@nextLink', 40,
         );
+    }
+
+    /**
+     * @dataProvider chunkSizes
+     */
+    public function test_chunk_skip($chunkSize)
+    {
+        EloquentEntitySet::$chunkSize = $chunkSize;
 
         $this->assertPaginationSequence(
             (new Request)
                 ->skip('15')
-                ->orderby('id desc')
+                ->orderby('id asc')
                 ->filter("type eq 'dog'")
                 ->count('true')
-                ->path($this->petEntitySetPath)
+                ->path($this->petEntitySetPath),
+            PHP_INT_MAX, '@nextLink', 40 - 15,
         );
     }
 }

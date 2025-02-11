@@ -41,13 +41,19 @@ trait UseODataAssertions
     protected function assertPaginationSequence(
         Request $request,
         ?int $pages = PHP_INT_MAX,
-        string $paginationProperty = '@nextLink'
+        string $paginationProperty = '@nextLink',
+        ?int $expected = null
     ): void {
         $pageCount = 0;
+        $entityCount = 0;
 
         $page = $this->getResponseBody(
             $this->assertJsonResponseSnapshot($request)
         );
+
+        if (property_exists($page, 'value')) {
+            $entityCount += count($page->value);
+        }
 
         while (property_exists($page, $paginationProperty) && ++$pageCount < $pages) {
             $page = $this->getResponseBody(
@@ -55,6 +61,14 @@ trait UseODataAssertions
                     $this->urlToReq($page->$paginationProperty)
                 )
             );
+
+            if (property_exists($page, 'value')) {
+                $entityCount += count($page->value);
+            }
+        }
+
+        if ($expected) {
+            $this->assertEquals($expected, $entityCount);
         }
     }
 
