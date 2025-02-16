@@ -4,12 +4,7 @@ declare(strict_types=1);
 
 namespace Flat3\Lodata\Drivers\SQL;
 
-use Doctrine\DBAL\Platforms\MySQLPlatform;
-use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
-use Doctrine\DBAL\Platforms\SqlitePlatform;
-use Doctrine\DBAL\Platforms\SQLServerPlatform;
-use Flat3\Lodata\Drivers\SQLEntitySet;
-use Flat3\Lodata\Exception\Protocol\ConfigurationException;
+use Flat3\Lodata\Helper\DBAL;
 use PDO;
 
 /**
@@ -46,28 +41,7 @@ trait SQLConnection
      */
     public function quoteSingleIdentifier(string $identifier): string
     {
-        switch ($this->getDriver()) {
-            case SQLEntitySet::PostgreSQL:
-                $driver = new PostgreSQLPlatform;
-                break;
-
-            case SQLEntitySet::SQLServer:
-                $driver = new SQLServerPlatform;
-                break;
-
-            case SQLEntitySet::SQLite:
-                $driver = new SqlitePlatform;
-                break;
-
-            case SQLEntitySet::MySQL:
-                $driver = new MySQLPlatform;
-                break;
-
-            default:
-                throw new ConfigurationException('invalid_driver', 'An invalid driver was used');
-        }
-
-        return $driver->quoteSingleIdentifier($identifier);
+        return $this->getDatabase()->quoteSingleIdentifier($identifier);
     }
 
     /**
@@ -78,5 +52,15 @@ trait SQLConnection
     public function getSQLExpression(): SQLExpression
     {
         return new SQLExpression($this);
+    }
+
+    /**
+     * Return an instance of the DBAL compatibility layer
+     *
+     * @return DBAL
+     */
+    public function getDatabase(): DBAL
+    {
+        return app(DBAL::class, ['connection' => $this->getConnection()]);
     }
 }

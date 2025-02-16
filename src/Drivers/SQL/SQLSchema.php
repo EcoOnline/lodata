@@ -11,12 +11,11 @@ use Flat3\Lodata\Annotation\Core\V1\Computed;
 use Flat3\Lodata\Annotation\Core\V1\ComputedDefaultValue;
 use Flat3\Lodata\DeclaredProperty;
 use Flat3\Lodata\Drivers\SQL\PDO\Doctrine;
-use Flat3\Lodata\Drivers\SQLEntitySet;
 use Flat3\Lodata\Exception\Protocol\ConfigurationException;
 use Flat3\Lodata\Facades\Lodata;
+use Flat3\Lodata\Helper\DBAL;
 use Flat3\Lodata\Helper\Discovery;
 use Flat3\Lodata\Type;
-use Illuminate\Database\Connection;
 use Illuminate\Support\Arr;
 
 /**
@@ -25,8 +24,6 @@ use Illuminate\Support\Arr;
  */
 trait SQLSchema
 {
-    use Doctrine;
-
     /**
      * Discover SQL fields on this entity set as OData properties
      * @return $this
@@ -36,14 +33,7 @@ trait SQLSchema
         $table = (new Discovery)->remember(
             sprintf("sql.%s.%s", $this->getConnection()->getName(), $this->getTable()),
             function () {
-                /** @var Connection $connection */
-                $connection = $this->getConnection();
-                $manager = $this->getDoctrineSchemaManager();
-                $table = $this->getTable();
-                if ($connection->getDriverName() === SQLEntitySet::PostgreSQL) {
-                    $table = $this->quoteSingleIdentifier($table);
-                }
-                return $manager->listTableDetails($table);
+                return $this->getDatabase()->listTableDetails($this->getTable());
             }
         );
 
@@ -86,7 +76,7 @@ trait SQLSchema
         }
 
         $blacklist = config('lodata.discovery.blacklist', []);
-        $platform = $this->getDoctrineSchemaManager()->getDatabasePlatform();
+        $platform = $this->getDatabase()->getDatabasePlatform();
 
         foreach ($columns as $column) {
             $columnName = $column->getName();

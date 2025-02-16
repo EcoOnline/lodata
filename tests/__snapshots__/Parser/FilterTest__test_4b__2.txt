@@ -1,3 +1,3 @@
 expression: month(origin) eq 11
-result: ( MONTH( `flights`.`origin` ) = ? )
+result: ( MONTH( "flights"."origin" ) = ? )
 parameters: 11

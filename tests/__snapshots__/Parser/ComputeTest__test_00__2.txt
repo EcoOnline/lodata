@@ -1,2 +1,2 @@
 expression: origin
-result: `flights`.`origin`
+result: "flights"."origin"

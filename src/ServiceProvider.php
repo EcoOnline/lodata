@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flat3\Lodata;
 
+use Composer\InstalledVersions;
 use Flat3\Lodata\Controller\Monitor;
 use Flat3\Lodata\Controller\OData;
 use Flat3\Lodata\Controller\ODCFF;
@@ -11,7 +12,10 @@ use Flat3\Lodata\Controller\PBIDS;
 use Flat3\Lodata\Controller\Response;
 use Flat3\Lodata\Helper\Filesystem;
 use Flat3\Lodata\Helper\Flysystem;
+use Flat3\Lodata\Helper\DBAL;
 use Flat3\Lodata\Helper\Symfony;
+use Illuminate\Database\ConnectionInterface;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -73,6 +77,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->app->bind(Filesystem::class, function () {
             return class_exists('League\Flysystem\Adapter\Local') ? new Flysystem\Flysystem1() : new Flysystem\Flysystem3();
+        });
+
+        $this->app->bind(DBAL::class, function (Application $app, array $args) {
+            return version_compare(InstalledVersions::getVersion('doctrine/dbal'), '4.0.0', '>=') ? new DBAL\DBAL4($args['connection']) : new DBAL\DBAL3($args['connection']);
         });
 
         $route = self::route();

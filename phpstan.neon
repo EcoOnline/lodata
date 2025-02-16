@@ -10,5 +10,6 @@ parameters:
             - src/Helper/Symfony/Response5.php
         analyse:
             - src/Helper/Flysystem/Flysystem1.php
+            - src/Helper/DBAL/DBAL3/ConnectsToDatabase.php
             - tests/Helpers/Flysystem/TestFilesystemAdapter1.php
             - tests/Helpers/StreamingJsonMatches/StreamingJsonMatches80.php

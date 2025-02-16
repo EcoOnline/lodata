@@ -1,24 +1,13 @@
 <?php
 
-namespace Flat3\Lodata\Drivers\SQL\PDO\Concerns;
+namespace Flat3\Lodata\Helper\DBAL\DBAL3;
 
-use Flat3\Lodata\Drivers\SQL\PDO\Connection;
+use Doctrine\DBAL\Driver\PDO\Connection;
 use InvalidArgumentException;
 use PDO;
 
 trait ConnectsToDatabase
 {
-    /**
-     * Create a new database connection.
-     *
-     * @param  mixed[]  $params
-     * @param  string|null  $username
-     * @param  string|null  $password
-     * @param  mixed[]  $driverOptions
-     * @return Connection
-     *
-     * @throws InvalidArgumentException
-     */
     public function connect(array $params, $username = null, $password = null, array $driverOptions = [])
     {
         if (!isset($params['pdo']) || !$params['pdo'] instanceof PDO) {
